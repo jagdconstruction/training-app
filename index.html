@@ -358,13 +358,24 @@ if (currentIndex === videos.length - 1) {
     }
 
     function updateVideoHeader() {
-      const t = translations[currentLang];
-      const v = videos[currentIndex];
-      const name = currentLang === "en" ? v.en : v.es;
+  const t = translations[currentLang];
+  const v = videos[currentIndex];
+  const name = currentLang === "en" ? v.en : v.es;
 
-      els.videoTitle.textContent = name + " Training";
-      els.videoCounter.textContent = t.counter(currentIndex + 1, videos.length);
-    }
+  els.videoTitle.textContent = name + " Training";
+  els.videoCounter.textContent = t.counter(currentIndex + 1, videos.length);
+
+  // IMPORTANT: Set the correct button label every time the header updates
+  if (currentIndex === videos.length - 1) {
+    els.nextBtn.textContent =
+      currentLang === "en"
+        ? "Continue to Training Form"
+        : "Continuar al formulario de capacitación";
+  } else {
+    els.nextBtn.textContent = t.nextBtn;
+  }
+}
+
 
     function updateAckLabel() {
       const t = translations[currentLang];
@@ -526,5 +537,6 @@ els.continueBtn.addEventListener("click", function (e) {
   </script>
 </body>
 </html>
+
 
 
