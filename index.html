@@ -191,72 +191,55 @@
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
-    // --- Your Adobe Sign form URL ---
     const ADOBE_SIGN_URL =
       "https://na2.documents.adobe.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhBaK_l5Wopm430r1HwIRPnxP8nj-zbKyAsAoqj19EPGbQ6qXlgWD1IspW25_ypXqgI*";
 
-    // --- Video list (order matters) ---
-    // IDs extracted from your YouTube links.
+    // Video list (order matters) — IDs extracted from your links
     const videos = [
       {
         id: "Tzpz5fko-fg",
-        en: "Respirator Safety Training",
-        es: "Capacitación de protección respiratoria",
-        standard_en: "29 CFR 1910.134 (Respiratory Protection)",
-        standard_es: "29 CFR 1910.134 (Protección respiratoria)"
+        title: "Respirator Safety Training",
+        ack_en: (t) => `I confirm that I have watched the entire "${t}" video and understand the information presented. I acknowledge this video is only part of my training and i was trained in accordance with 29 CFR 1910.134 Respiratory Protection`
       },
       {
         id: "TEf1Tsx_3MA",
-        en: "Fall Protection Training",
-        es: "Capacitación de protección contra caídas",
-        standard_en: "29 CFR 1926 Subpart M (Fall Protection)",
-        standard_es: "29 CFR 1926 Subparte M (Protección contra caídas)"
+        title: "Fall Protection Training",
+        ack_en: (t) => `I confirm that I have watched the entire "${t}" video and understand the information presented. I acknowledge this video is only part of my training and i was trained in accordance with 29 CFR 1926 Subpart M Fall Protection  Training requirements`
       },
       {
         id: "HnqabSdAwVg",
-        en: "Scaffold Training",
-        es: "Capacitación sobre andamios",
-        standard_en: "29 CFR 1926 Subpart L (Scaffolds)",
-        standard_es: "29 CFR 1926 Subparte L (Andamios)"
+        title: "Scaffold Training",
+        ack_en: (t) => `I confirm that I have watched the entire "${t}" video and understand the information presented. I acknowledge this video is only part of my training and i was trained in accordance with 29 CFR 1926 Subpart L, Scaffolds`
       },
       {
         id: "-kQmLYqIR2A",
-        en: "Crystalline Silica Training",
-        es: "Capacitación sobre sílice cristalina respirable",
-        standard_en: "29 CFR 1926.1153 (Respirable Crystalline Silica)",
-        standard_es: "29 CFR 1926.1153 (Sílice cristalina respirable)"
+        title: "Crystalline Silica Training",
+        ack_en: (t) => `I confirm that I have watched the entire "${t}" video and understand the information presented. I acknowledge this video is only part of my training and i was trained in accordance with 29 CFR 1926.1153 Respirable Crystalline Silica`
       },
       {
         id: "bPoAHmox0BU",
-        en: "Lead Training",
-        es: "Capacitación sobre plomo",
-        standard_en: "29 CFR 1926.62 (Lead)",
-        standard_es: "29 CFR 1926.62 (Plomo)"
+        title: "Lead Training",
+        // OSHA correction applied: 1926.62 (was 1926.26)
+        ack_en: (t) => `I confirm that I have watched the entire "${t}" video and understand the information presented. I acknowledge this video is only part of my training and i was trained in accordance with 29 CFR 1926.62 Lead Standard`
       },
       {
         id: "b7ArZilnnTE",
-        en: "Ladder Safety Training",
-        es: "Capacitación de seguridad en escaleras",
-        standard_en: "29 CFR 1926.1053 (Ladders)",
-        standard_es: "29 CFR 1926.1053 (Escaleras)"
+        title: "Ladder Safety Training",
+        // OSHA correction applied: 1926.1053 (was 11926.1053)
+        ack_en: (t) => `I confirm that I have watched the entire "${t}" video and understand the information presented. I acknowledge this video is only part of my training and i was trained in accordance with 29 CFR 1926.1053 - Ladders`
       },
       {
         id: "GrC5-s4CI64",
-        en: "Hearing Protection Training",
-        es: "Capacitación de protección auditiva",
-        standard_en: "29 CFR 1926.52 (Occupational Noise Exposure) and 29 CFR 1926.101 (Hearing Protection)",
-        standard_es: "29 CFR 1926.52 (Exposición ocupacional al ruido) y 29 CFR 1926.101 (Protección auditiva)"
+        title: "Hearing Protection Training",
+        ack_en: (t) => `I confirm that I have watched the entire "${t}" video and understand the information presented. I acknowledge this video is only part of my training and i was trained in accordance with 29 CFR 1926.52 occupational noise exposure and 29 CFR  1926.101 hearing protection`
       },
       {
         id: "cpCzwyhCUZI",
-        en: "HazCom & GHS Training",
-        es: "Capacitación de comunicación de peligros y GHS",
-        standard_en: "29 CFR 1926.59 / 29 CFR 1910.1200 (Hazard Communication Standard (GHS))",
-        standard_es: "29 CFR 1926.59 / 29 CFR 1910.1200 (Norma de comunicación de peligros (GHS))"
+        title: "Hazcom & GHS Training",
+        ack_en: (t) => `I confirm that I have watched the entire "${t}" video and understand the information presented. I acknowledge this video is only part of my training and i was trained in accordance with 29 CFR 1926.59 (29 CFR 1910.1200) Hazard Communication  Standard`
       }
     ];
 
-    // --- Translations / UI text ---
     const translations = {
       en: {
         htmlLang: "en",
@@ -268,17 +251,12 @@
         noticeBody:
           "You must watch each training video in full. After each video ends, you must acknowledge completion before the next video will appear.",
         ackHeading: "Training Acknowledgment",
-        ackTemplate: (videoTitle, standardText) =>
-          `I confirm that I have watched the entire “${videoTitle}” video and understand the information presented. ` +
-          `I acknowledge that this video is only one part of my overall training, and that additional hands-on and site-specific training may be required. ` +
-          `I understand that this training is provided in accordance with OSHA requirements, including ${standardText}.`,
-        nextBtn: "Continue to Next Video",
-        lastBtn: "Continue to Training Form",
         ackNote:
           "The next video will not appear until the current video has ended and you have checked the acknowledgment box.",
+        nextBtn: "Continue to Next Video",
+        lastBtn: "Continue to Training Form",
         counter: (i, total) => `Video ${i} of ${total}`,
-        confirmForm:
-          "You are about to continue to the training form. Continue?"
+        confirmForm: "You are about to continue to the training form. Continue?"
       },
       es: {
         htmlLang: "es",
@@ -290,27 +268,22 @@
         noticeBody:
           "Debe ver cada video de capacitación completo. Después de que termine cada video, debe confirmar su finalización antes de que aparezca el siguiente video.",
         ackHeading: "Reconocimiento de capacitación",
-        ackTemplate: (videoTitle, standardText) =>
-          `Confirmo que he visto el video completo “${videoTitle}” y entiendo la información presentada. ` +
-          `Reconozco que este video es solo una parte de mi capacitación general y que puede requerirse capacitación adicional práctica y específica del sitio. ` +
-          `Entiendo que esta capacitación se proporciona de acuerdo con los requisitos de OSHA, incluidos ${standardText}.`,
-        nextBtn: "Continuar al siguiente video",
-        lastBtn: "Continuar al formulario de capacitación",
         ackNote:
           "El siguiente video no aparecerá hasta que termine el video actual y usted marque la casilla de reconocimiento.",
+        nextBtn: "Continuar al siguiente video",
+        lastBtn: "Continuar al formulario de capacitación",
         counter: (i, total) => `Video ${i} de ${total}`,
-        confirmForm:
-          "Está a punto de continuar al formulario de capacitación. ¿Desea continuar?"
+        confirmForm: "Está a punto de continuar al formulario de capacitación. ¿Desea continuar?"
       }
     };
 
-    // --- State ---
+    // State
     let currentLang = "en";
     let currentIndex = 0;
     let player = null;
     let currentVideoEnded = false;
 
-    // --- DOM refs ---
+    // DOM refs
     const els = {};
 
     function setNextButtonLabel() {
@@ -351,29 +324,23 @@
     function updateVideoHeader() {
       const t = translations[currentLang];
       const v = videos[currentIndex];
-      const name = currentLang === "en" ? v.en : v.es;
-
-      els.videoTitle.textContent = name;
+      els.videoTitle.textContent = v.title;
       els.videoCounter.textContent = t.counter(currentIndex + 1, videos.length);
     }
 
     function updateAckLabel() {
-      const t = translations[currentLang];
+      // Acknowledgment text stays exactly as you wrote it (English), per your request.
+      // Spanish toggle still applies to the UI labels/buttons.
       const v = videos[currentIndex];
-      const title = currentLang === "en" ? v.en : v.es;
-      const standard = currentLang === "en" ? v.standard_en : v.standard_es;
-
-      els.ackLabel.textContent = t.ackTemplate(title, standard);
+      els.ackLabel.textContent = v.ack_en(v.title);
     }
 
     function resetAckUI() {
       currentVideoEnded = false;
       els.ackCheckbox.checked = false;
 
-      // hide ack step until video ends
       els.ackStep.style.display = "none";
 
-      // disable next button
       els.nextBtn.disabled = true;
       els.nextBtn.classList.remove("enabled");
     }
@@ -402,13 +369,12 @@
       setNextButtonLabel();
 
       const vid = videos[currentIndex].id;
-
       if (player && typeof player.loadVideoById === "function") {
         player.loadVideoById(vid);
       }
     }
 
-    // --- YouTube API callback ---
+    // YouTube API callback
     function onYouTubeIframeAPIReady() {
       player = new YT.Player("player", {
         videoId: videos[0].id,
@@ -423,14 +389,12 @@
     }
 
     function onPlayerStateChange(event) {
-      // Only show acknowledgment when the current video ends
       if (event.data === YT.PlayerState.ENDED) {
         showAckUIAfterEnd();
         maybeEnableNext();
       }
     }
 
-    // --- Init ---
     document.addEventListener("DOMContentLoaded", function () {
       // Cache DOM refs
       els.pageTitle = document.getElementById("page-title");
@@ -452,12 +416,10 @@
         btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
       });
 
-      // Ack checkbox logic
+      // Ack checkbox
       els.ackCheckbox.addEventListener("change", maybeEnableNext);
 
-      // Next button logic:
-      // - Videos 1..7: load next video
-      // - Video 8: go to Adobe Sign form
+      // Next button
       els.nextBtn.addEventListener("click", function (e) {
         e.preventDefault();
         e.stopPropagation();
