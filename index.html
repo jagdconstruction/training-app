@@ -128,24 +128,24 @@
 
   <!-- Continue Button -->
   <div id="continueSection">
-    <a id="continueBtn" href="training_application.html">Continue to Training Application →</a>
+    <a id="continueBtn" href="training_form.html">Continue to Training Application →</a>
   </div>
 
   <!-- SCRIPT -->
   <script>
     const video = document.getElementById('trainingVideo');
 
-    // Show acknowledgment only after video ends
+    // Show acknowledgment after video ends
     video.addEventListener('ended', function () {
       document.getElementById('ackSection').style.display = 'block';
     });
 
-    // Enable Continue button only after checkbox is checked
+    // Show continue button after checkbox clicked
     function bindCheckbox() {
       const checkbox = document.getElementById('ackCheckbox');
       checkbox.addEventListener('change', function () {
-        const continueSection = document.getElementById('continueSection');
-        continueSection.style.display = checkbox.checked ? 'block' : 'none';
+        document.getElementById('continueSection').style.display =
+          checkbox.checked ? 'block' : 'none';
       });
     }
     bindCheckbox();
