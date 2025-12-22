@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Required Safety Training</title>
+  <title>Jag'd Safety Training</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
@@ -17,7 +17,15 @@
 
     h1 {
       text-align: center;
-      margin: 10px 0 20px;
+      margin: 10px 0 5px;
+      font-size: 2rem;
+    }
+
+    h3 {
+      text-align: center;
+      margin: 0 0 20px;
+      font-weight: normal;
+      color: #444;
     }
 
     .lang-switcher {
@@ -98,8 +106,9 @@
     <button id="esBtn" class="lang-btn">Español</button>
   </div>
 
-  <!-- Page Title -->
-  <h1 id="page-title">Required Safety Training Video</h1>
+  <!-- Updated Header -->
+  <h1 id="page-title">Jag'd Safety Training</h1>
+  <h3 id="page-subtitle">Once video is completed, check the box below to proceed.</h3>
 
   <!-- Training Video -->
   <div class="video-container">
@@ -109,7 +118,7 @@
     </video>
   </div>
 
-  <!-- Acknowledgment Section (hidden until video ends) -->
+  <!-- Acknowledgment Section -->
   <div id="ackSection">
     <label id="ackLabel">
       <input type="checkbox" id="ackCheckbox">
@@ -117,67 +126,41 @@
     </label>
   </div>
 
-  <!-- Continue Button (hidden until checkbox is checked) -->
+  <!-- Continue Button -->
   <div id="continueSection">
     <a id="continueBtn" href="training_application.html">Continue to Training Application →</a>
   </div>
 
   <!-- SCRIPT -->
   <script>
-    // --------------------------------------------------
-    // DISABLE SCRUBBING / SEEKING (NO SKIPPING AHEAD)
-    // --------------------------------------------------
     const video = document.getElementById('trainingVideo');
-    let lastAllowedTime = 0;
 
-    video.addEventListener('timeupdate', function () {
-      if (video.currentTime > lastAllowedTime + 0.35) {
-        video.currentTime = lastAllowedTime;
-      } else {
-        lastAllowedTime = video.currentTime;
-      }
-    });
-
-    video.addEventListener('seeking', function () {
-      if (video.currentTime > lastAllowedTime) {
-        video.currentTime = lastAllowedTime;
-      }
-    });
-
-    // --------------------------------------------------
-    // SHOW ACK CHECKBOX AFTER VIDEO ENDS
-    // --------------------------------------------------
+    // Show acknowledgment only after video ends
     video.addEventListener('ended', function () {
       document.getElementById('ackSection').style.display = 'block';
     });
 
-    // --------------------------------------------------
-    // CONTINUE BUTTON AFTER CHECKBOX CLICKED
-    // --------------------------------------------------
+    // Enable Continue button only after checkbox is checked
     function bindCheckbox() {
       const checkbox = document.getElementById('ackCheckbox');
       checkbox.addEventListener('change', function () {
         const continueSection = document.getElementById('continueSection');
-        if (checkbox.checked) {
-          continueSection.style.display = 'block';
-        } else {
-          continueSection.style.display = 'none';
-        }
+        continueSection.style.display = checkbox.checked ? 'block' : 'none';
       });
     }
     bindCheckbox();
 
-    // --------------------------------------------------
-    // ENGLISH / SPANISH LANGUAGE TOGGLE
-    // --------------------------------------------------
+    // English / Spanish Toggle
     const enText = {
-      title: "Required Safety Training Video",
+      title: "Jag'd Safety Training",
+      subtitle: "Once video is completed, check the box below to proceed.",
       ack: "I confirm that I have watched the entire safety training video. I acknowledge this video is only part of my training. Additional safety rules and procedures are covered in the written training materials provided, which I have been trained on.",
       continue: "Continue to Training Application →"
     };
 
     const esText = {
-      title: "Video Obligatorio de Capacitación de Seguridad",
+      title: "Capacitación de Seguridad Jag'd",
+      subtitle: "Una vez que termine el video, marque la casilla a continuación para continuar.",
       ack: "Confirmo que he visto el video completo de capacitación de seguridad. Reconozco que este video es solo una parte de mi capacitación. Reglas y procedimientos de seguridad adicionales están incluidos en los materiales escritos que he recibido y en los cuales he sido capacitado.",
       continue: "Continuar a la Solicitud de Capacitación →"
     };
@@ -187,6 +170,7 @@
       document.getElementById('esBtn').classList.remove('active');
 
       document.getElementById('page-title').innerText = enText.title;
+      document.getElementById('page-subtitle').innerText = enText.subtitle;
       document.getElementById('ackLabel').innerHTML =
         '<input type="checkbox" id="ackCheckbox"> ' + enText.ack;
 
@@ -199,6 +183,7 @@
       document.getElementById('enBtn').classList.remove('active');
 
       document.getElementById('page-title').innerText = esText.title;
+      document.getElementById('page-subtitle').innerText = esText.subtitle;
       document.getElementById('ackLabel').innerHTML =
         '<input type="checkbox" id="ackCheckbox"> ' + esText.ack;
 
