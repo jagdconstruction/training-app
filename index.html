@@ -100,11 +100,13 @@
 
 <body>
 
+  <!-- Language Toggle -->
   <div class="lang-switcher">
     <button id="enBtn" class="lang-btn active">English</button>
     <button id="esBtn" class="lang-btn">Español</button>
   </div>
 
+  <!-- Updated Header -->
   <h1 id="page-title">Jag'd Safety Training</h1>
   <h3 id="page-subtitle">Once video is completed, check the box below to proceed.</h3>
 
@@ -132,13 +134,38 @@
     </a>
   </div>
 
+  <!-- SCRIPT -->
   <script>
     const video = document.getElementById('trainingVideo');
+    let lastAllowedTime = 0;
 
+    // --------------------------------------------------
+    // DISABLE SCRUBBING / SEEKING FORWARD
+    // --------------------------------------------------
+    video.addEventListener('timeupdate', function () {
+      if (video.currentTime > lastAllowedTime + 0.35) {
+        video.currentTime = lastAllowedTime;
+      } else {
+        lastAllowedTime = video.currentTime;
+      }
+    });
+
+    video.addEventListener('seeking', function () {
+      if (video.currentTime > lastAllowedTime) {
+        video.currentTime = lastAllowedTime;
+      }
+    });
+
+    // --------------------------------------------------
+    // SHOW ACKNOWLEDGMENT AFTER VIDEO ENDS
+    // --------------------------------------------------
     video.addEventListener('ended', function () {
       document.getElementById('ackSection').style.display = 'block';
     });
 
+    // --------------------------------------------------
+    // SHOW CONTINUE BUTTON AFTER CHECKBOX CLICKED
+    // --------------------------------------------------
     function bindCheckbox() {
       const checkbox = document.getElementById('ackCheckbox');
       checkbox.addEventListener('change', function () {
@@ -148,6 +175,9 @@
     }
     bindCheckbox();
 
+    // --------------------------------------------------
+    // LANGUAGE TOGGLE
+    // --------------------------------------------------
     const enText = {
       title: "Jag'd Safety Training",
       subtitle: "Once video is completed, check the box below to proceed.",
