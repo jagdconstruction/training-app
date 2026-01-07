@@ -128,16 +128,58 @@
 
   <!-- Continue Button -->
   <div id="continueSection">
-    <a id="continueBtn"
-       href="https://na2.documents.adobe.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhBaK_l5Wopm430r1HwIRPnxP8nj-zbKyAsAoqj19EPGbQ6qXlgWD1IspW25_ypXqgI*">
-       Continue to Training Application →
+    <a id="continueBtn" href="#">
+      Continue to Training Application →
     </a>
   </div>
 
   <!-- SCRIPT -->
   <script>
+    // --------------------------------------------------
+    // PM -> ADOBE LINK ROUTING (OPTION 4)
+    // --------------------------------------------------
+    const ADOBE_FORMS = {
+      al:  "https://na2.documents.adobe.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhADrjyP7HxFJzwACIwPgGmso3tesU54LTwQOhEmzhmaUbWPLQFkWSzJW_bNWVB99Pc*",
+      gkl: "https://na2.documents.adobe.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhAeQC4kXs2uDABn1Bc2Tu7usWGWVYEXu61lQlLM99TMzaRpmkgCsCGCKHhh8B1dMKY*",
+      wl:  "https://na2.documents.adobe.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhDz_RYycqM0ifJcPL57igTEUUt2HuMmiZ-NNZL1-vhg981-4TaehTUlnzKLMEj3ZGE*",
+      gg:  "https://na2.documents.adobe.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhAAb3eKJ3crQp2NBo-u6BUUnAGvqfdEdNmDP6OmSM4GwaLP_OMgW09pDqVmlMYemB4*"
+    };
+
+    function resolveAdobeUrl() {
+      const pm = (new URLSearchParams(window.location.search).get("pm") || "").toLowerCase();
+      return ADOBE_FORMS[pm] || null;
+    }
+
+    const ADOBE_SIGN_URL = resolveAdobeUrl();
+
+    // --------------------------------------------------
+    // VIDEO + SCRUBBING LOCK
+    // --------------------------------------------------
     const video = document.getElementById('trainingVideo');
     let lastAllowedTime = 0;
+
+    // Track current language so alerts match language button selection
+    let currentLang = "en";
+
+    // Set the Continue button href based on ?pm=
+    const continueBtn = document.getElementById("continueBtn");
+    if (ADOBE_SIGN_URL) {
+      continueBtn.href = ADOBE_SIGN_URL;
+    } else {
+      continueBtn.href = "#";
+    }
+
+    // If someone lands on index.html without a PM code, block final navigation
+    continueBtn.addEventListener("click", function (e) {
+      if (!ADOBE_SIGN_URL) {
+        e.preventDefault();
+        alert(
+          currentLang === "es"
+            ? "Falta el enlace del formulario. Use el enlace proporcionado por su gerente de proyecto."
+            : "Missing training form link. Please use the link provided by your project manager."
+        );
+      }
+    });
 
     // --------------------------------------------------
     // DISABLE SCRUBBING / SEEKING FORWARD
@@ -193,26 +235,42 @@
     };
 
     document.getElementById('enBtn').addEventListener('click', function () {
+      currentLang = "en";
+      document.documentElement.lang = "en";
+
       this.classList.add('active');
       document.getElementById('esBtn').classList.remove('active');
 
       document.getElementById('page-title').innerText = enText.title;
       document.getElementById('page-subtitle').innerText = enText.subtitle;
+
+      // Rebuild checkbox + text (same as your current behavior)
       document.getElementById('ackLabel').innerHTML =
         '<input type="checkbox" id="ackCheckbox"> ' + enText.ack;
+
+      // IMPORTANT: Hide continue section when swapping language so user must re-check
+      document.getElementById('continueSection').style.display = 'none';
 
       bindCheckbox();
       document.getElementById('continueBtn').innerText = enText.continue;
     });
 
     document.getElementById('esBtn').addEventListener('click', function () {
+      currentLang = "es";
+      document.documentElement.lang = "es";
+
       this.classList.add('active');
       document.getElementById('enBtn').classList.remove('active');
 
       document.getElementById('page-title').innerText = esText.title;
       document.getElementById('page-subtitle').innerText = esText.subtitle;
+
+      // Rebuild checkbox + text (same as your current behavior)
       document.getElementById('ackLabel').innerHTML =
         '<input type="checkbox" id="ackCheckbox"> ' + esText.ack;
+
+      // IMPORTANT: Hide continue section when swapping language so user must re-check
+      document.getElementById('continueSection').style.display = 'none';
 
       bindCheckbox();
       document.getElementById('continueBtn').innerText = esText.continue;
